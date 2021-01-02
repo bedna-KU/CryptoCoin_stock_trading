@@ -6,7 +6,9 @@ Blog in Slovak language https://linuxos.sk/blog/zumpa/detail/umela-inteligencia-
 
 ## Installation
 git clone https://github.com/bedna-KU/CryptoCoin_stock_trading.git
+
 cd CryptoCoin_stock_trading
+
 python3 -m pip install -r requirements.txt
 
 ## Files
