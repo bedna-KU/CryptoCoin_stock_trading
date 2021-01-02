@@ -55,23 +55,17 @@ if action == "save":
     with open('file_new.csv', 'w') as f:
         write = csv.writer(f) 
         write.writerows(data_list_columns)
-        print ("CSV file saved!")
+        print("Rows:", len(data_list_columns))
+        print("CSV file saved!")
+# Show garph
 if action == "graph":
     x_list = []
     y_list = []
     for s in data_list_columns:
         x_list.append (float(s[0]) / 1000)
         y_list.append (float(s[1]))
-        print(datetime.utcfromtimestamp(float(s[0]) / 1000).strftime('%Y-%m-%d %H:%M:%S'))
-        dates = [datetime.fromtimestamp(ts) for ts in x_list]
-    # Convert strings to float
-    # x_list = list(map(float, x_list))
-    # y_list = list(map(float, y_list))
-    # print(dates)
-    # plt.tick_params(axis='x', which='major', labelsize=13)
     
-    # plt.xticks(np.arange(0, 100, 5))
-    
+    dates = [datetime.fromtimestamp(ts) for ts in x_list]
     plt.subplots_adjust(bottom = 0.2)
     plt.xticks(rotation = 25)
     ax = plt.gca()
