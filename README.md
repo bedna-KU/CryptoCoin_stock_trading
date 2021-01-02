@@ -35,7 +35,11 @@ python3 csv_columns.py --action graph --columns "0 4"
 
 ## TODO
 Download dataset               - DONE
+
 Make Artificial Intelligence   - will be
+
 Learn Artificial Intelligence  - will be
+
 Connect on CryptoCoin stock    - will be
+
 Automated trading with AI      - will be
