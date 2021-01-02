@@ -1,0 +1,7 @@
+matplotlib
+datetime
+numpy
+argparse
+python-binance
+dateparser
+pytz
