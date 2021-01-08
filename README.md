@@ -38,12 +38,12 @@ python3 csv_columns.py --action graph --columns "0 4"
 ## Work in progress
 
 ## TODO
-Download dataset               - DONE
+Download dataset               :heavy_check_mark:
 
-Make Artificial Intelligence   - will be
+Make Artificial Intelligence   :heavy_check_mark:
 
-Learn Artificial Intelligence  - will be
+Learn Artificial Intelligence  :heavy_check_mark:
 
-Connect on CryptoCoin stock    - will be
+Connect on CryptoCoin stock    :black_square_button:
 
-Automated trading with AI      - will be
+Automated trading with AI      :black_square_button:
