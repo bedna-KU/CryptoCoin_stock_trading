@@ -25,8 +25,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 INPUT_LEN = 1440
 OUTPUT_LEN = 10
 SHIFT = 10
-MAX_VALUE = 1
-ACTIVATION = "relu"
 EPOCHS = 20
 BATCH_SIZE = 128
 FILEPATH = "weights.hdf5"
@@ -147,7 +145,7 @@ def model_train (model, X, y):
 	print (">>>", X.shape)
 	model.fit (X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
 
-model = lstm_medium (INPUT_LEN, OUTPUT_LEN, MAX_VALUE, ACTIVATION)
+model = lstm_medium (INPUT_LEN, OUTPUT_LEN)
 model_load (model)
 print (model.summary())
 X, y = data_load ()
