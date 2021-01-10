@@ -21,17 +21,16 @@ def lstm_easy (max_len, max_value, activation):
 	# Configure the neural network model
 	model = Sequential()
 
-	# Model with 100 Neurons - inputshape = 100 Timestamps
-	model.add(LSTM(100, return_sequences=True, input_shape = (max_len, max_value + 1, 1)))
-	model.add(LSTM(100, return_sequences=False))
-	model.add(Dense(25, activation='relu'))
+	model.add(LSTM(100, return_sequences = True, input_shape = (max_len, max_value + 1, 1)))
+	model.add(LSTM(100, return_sequences = False))
+	model.add(Dense(25, activation = 'relu'))
 	model.add(Dense(1))
 
 	# Compile the model
 	model.compile(optimizer='adam', loss='mean_squared_error')
 	return model
 
-def lstm_medium (max_input_len, max_output_len, max_value, activation):
+def lstm_medium (max_input_len, max_output_len):
 	# Initialising the RNN
 	model = Sequential()# Adding the first LSTM layer and some Dropout regularisation
 	model.add(LSTM(units = 50, return_sequences = True, input_shape = (max_input_len, 1)))
@@ -49,7 +48,7 @@ def lstm_medium (max_input_len, max_output_len, max_value, activation):
 	model.add(Dropout(0.2))
 
 	# Adding the output layer
-	model.add(Dense(units = 10))
+	model.add(Dense(units = max_output_len))
 	# Compiling the RNN
 	model.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
