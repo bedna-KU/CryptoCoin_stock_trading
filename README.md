@@ -14,7 +14,7 @@ sudo apt install python3-dev
 python3 -m pip install -r requirements.txt
 
 ## Files
-    binanve/get_all_pairs.py           - Get all pairs (symbols)
+    binance/get_all_pairs.py           - Get all pairs (symbols)
     binance/save_historical_data.py    - Save historical data
     csv_columns.py                     - Extract specific columns from file.csv
 
