@@ -36,10 +36,12 @@ python3 csv_columns.py --action save --columns "0 4"
 python3 csv_columns.py --action graph --columns "0 4"
 
 ## Download data, learn, predict. All in one.
+```
 python3 binance/save_historical_data.py --symbol DOGEUSDT --start "1. Dec 2019" --interval 1m
 python3 csv_columns.py --action save --columns "0 1 2 3 4 5"
 python3 train.py
 python3 predict.py
+```
 
 ## Work in progress
 
