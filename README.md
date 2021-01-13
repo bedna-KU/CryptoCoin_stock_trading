@@ -17,6 +17,8 @@ python3 -m pip install -r requirements.txt
     binance/get_all_pairs.py           - Get all pairs (symbols)
     binance/save_historical_data.py    - Save historical data
     csv_columns.py                     - Extract specific columns from file.csv
+    train.py                           - Train
+    predict.py                         - Predict
 
 ### Get all pairs
 python3 binance/get_all_pairs.py
