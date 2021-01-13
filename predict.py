@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+import os
+import tensorflow as tf
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import sys
 import csv
 import time
@@ -30,6 +32,22 @@ BATCH_SIZE = 128
 FILEPATH = "weights.hdf5"
 
 ####################################################
+
+def sleep_anim(seconds):
+    start = time.time()
+    iteration = 0
+    symbols = ['-', '\\', '|', '/']
+    symbols = ['>    ', '>>   ', '>>>  ', '>>>> ', '>>>>>', '>>>> ', '>>>  ', '>>   ']
+    go = True
+    while go:
+        now = time.time()
+        print(symbols[iteration], seconds - int(now - start), end="\r", flush=True)
+        time.sleep(0.3)
+        iteration += 1
+        if iteration > len(symbols) - 1:
+            iteration = 0
+        if now - start > seconds:
+            go = False
 
 # Load data
 def data_load ():
@@ -146,9 +164,10 @@ print("RESULT", result_decoded)
 real = start_point
 print("### start_point", start_point)
 
-time.sleep(60)
+sleep_anim(60)
 
-for n in range(1, 10):
+for n in range(0, 10):
+	print(">>> LOOP", n)
 	r = requests.get('https://api.binance.com/api/v3/ticker/price?symbol=DOGEUSDT')
 	json_data = json.loads(r.text)
 	price = json_data["price"]
@@ -156,10 +175,11 @@ for n in range(1, 10):
 	print("RESULT", result_decoded)
 	real = np.append(real, float(price))
 	print("REAL", real)
-	time.sleep(60)
+	sleep_anim(60)
 
-plt.plot(result_decoded, c = 'black')
-plt.plot(real, c = 'red')
+plt.plot(result_decoded, c = 'blue')
+plt.plot(real, c = 'green')
+plt.text(2,4,'This text starts at point (2,4)')
 # plt.draw()
 # plt.pause(0.001)
 plt.show()
