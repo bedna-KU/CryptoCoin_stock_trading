@@ -5,3 +5,4 @@ argparse
 python-binance
 dateparser
 pytz
+tensorflow-cpu
