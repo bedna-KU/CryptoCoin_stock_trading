@@ -53,3 +53,27 @@ def lstm_medium (max_input_len, max_output_len):
 	model.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
 	return model
+
+def lstm_hl (input_high, input_low, output):
+	# Initialising the RNN
+	model = Sequential()# Adding the first LSTM layer and some Dropout regularisation
+	model.add(LSTM(units = 50, return_sequences = True, input_shape = (input_high, input_low)))
+
+	# Adding a second LSTM layer and some Dropout regularisation
+	model.add(LSTM(units = 50, return_sequences = True))
+	model.add(Dropout(0.2))
+
+	# Adding a third LSTM layer and some Dropout regularisation
+	model.add(LSTM(units = 50, return_sequences = True))
+	model.add(Dropout(0.2))
+
+	# Adding a fourth LSTM layer and some Dropout regularisation
+	model.add(LSTM(units = 50))
+	model.add(Dropout(0.2))
+
+	# Adding the output layer
+	model.add(Dense(units = output))
+	# Compiling the RNN
+	model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+
+	return model
