@@ -85,7 +85,7 @@ def data_load ():
 	print(">>> count", len(input_high_arr))
 
 	# To ndarray
-	Xh = np.array(input_high)
+	Xh = np.array(input_high_arr)
 	Xl = np.array(input_low_arr)
 	y = np.array(output_close_arr)
 	encode2 = np.vectorize(encode)
@@ -148,8 +148,7 @@ def model_train (model, Xh, Xl, y):
 	callbacks = [print_callback, checkpoint]
 	# X = np.expand_dims (Xh, axis = 2)
 	X = Xh
-	print (">>> ", X.shape)
-	X = X[ : , np.newaxis]
+	X = np.insert(X, 1, Xl)
 	print (">>>", X.shape)
 	model.fit (X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
 
@@ -157,6 +156,9 @@ model = lstm_medium (INPUT_LEN, OUTPUT_LEN)
 model_load (model)
 print (model.summary())
 Xh, Xl, y = data_load ()
+# print("xxx", Xh.shape)
+# print("xxx", Xl.shape)
+# print("xxx", y.shape)
 # exit("END")
 model_train (model, Xh, Xl, y)
 
