@@ -8,7 +8,7 @@ from numpy.core.defchararray import encode
 
 from numpy.lib.function_base import vectorize
 # Own library
-from models.model import lstm_medium
+from models.model import lstm_hl
 
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -22,7 +22,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # PARAMETERS
 ####################################################
 
-INPUT_LEN = 144
+INPUT_LEN = 1440
 OUTPUT_LEN = 10
 SHIFT = 10
 EPOCHS = 28
@@ -67,8 +67,8 @@ def data_load ():
 	# encode2 = np.vectorize(encode)
 	# data_close = encode2(data_close, max_close)
 	loop = 0
-	input_high_arr = []
-	input_low_arr = []
+	input_high_list = []
+	input_low_list = []
 	output_close_arr = []
 	while yes:
 		input_high = data_high[0 + SHIFT * loop : INPUT_LEN + SHIFT * loop]
@@ -77,22 +77,33 @@ def data_load ():
 		if len(input_high) < INPUT_LEN or len(output_close) < OUTPUT_LEN:
 			yes = False
 		else:
-			input_high_arr.append(input_high)
-			input_low_arr.append(input_low)
+			input_high_list.append(input_high)
+			input_low_list.append(input_low)
 			output_close_arr.append(output_close)
 			loop += SHIFT
 
-	print(">>> count", len(input_high_arr))
+	input_high_arr = np.array(input_high_list)
+	input_low_arr = np.array(input_low_list)
+	print(">>> count list", len(input_high_list))
+	print(">>> count arr", len(input_high_arr))
+	print(">>> count arr shape high", input_high_arr.shape)
+	print(">>> count arr shape low", input_high_arr.shape)
+	print(">>> count arr type", type(input_high_arr))
+	# print(">>> arr", input_high_arr)
 
 	# To ndarray
-	Xh = np.array(input_high_arr)
-	Xl = np.array(input_low_arr)
-	y = np.array(output_close_arr)
+	# input_high_arr = np.array(input_high_arr)
+	# input_low_arr = np.array(input_low_arr)
+	X = np.array([input_high_arr, input_low_arr], dtype = float)
+	X = np.reshape(X, (len(input_high_list), INPUT_LEN, 2))
+	# print(X)
+	y = np.array(output_close_arr, dtype = float)
+	print ("+++ type(y)", type(y))
 	encode2 = np.vectorize(encode)
-	input_high_arr = encode2(Xh, max_close)
-	input_low_arr = encode2(Xl, max_close)
-	output_close_arr = encode2(y, max_close)
-	return input_high_arr, input_low_arr, output_close_arr
+	X = encode2(X, max_close)
+	y = encode2(y, max_close)
+	print(y)
+	return X, y
 
 def get_column(matrix, i):
 	return [row[i] for row in matrix]
@@ -139,27 +150,32 @@ def model_load (model):
 		model.load_weights (FILEPATH)
 
 # Train model
-def model_train (model, Xh, Xl, y):
+def model_train (model, X, y):
 	checkpoint = ModelCheckpoint (FILEPATH, monitor = 'loss',
 								 verbose = 1, save_best_only = True,
 								 mode = 'min')
 
 	print_callback = LambdaCallback (on_epoch_end = on_epoch_end)
 	callbacks = [print_callback, checkpoint]
-	# X = np.expand_dims (Xh, axis = 2)
-	X = Xh
-	X = np.insert(X, 1, Xl)
-	print (">>>", X.shape)
+	# X = np.expand_dims (X, axis = 3)
+	# print("ccc", Xh.shape)
+	# print("ccc", Xh)
+	# X = Xh
+	# X = np.vstack((Xh, Xl)).T
+	# X = np.insert(X, 1, Xl)
+	print ("+++", X.shape)
+	print ("+++", type(X))
+	print ("+++", type(y))
 	model.fit (X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
 
-model = lstm_medium (INPUT_LEN, OUTPUT_LEN)
+model = lstm_hl (INPUT_LEN, OUTPUT_LEN)
 model_load (model)
 print (model.summary())
-Xh, Xl, y = data_load ()
+X, y = data_load ()
 # print("xxx", Xh.shape)
 # print("xxx", Xl.shape)
 # print("xxx", y.shape)
 # exit("END")
-model_train (model, Xh, Xl, y)
+model_train (model, X, y)
 
 

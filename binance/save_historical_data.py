@@ -133,7 +133,9 @@ def get_historical_klines(symbol, interval, start_str, end_str=None):
             endTime=end_ts
         )
 
-        print(">>>", temp_data[1][0])
+        unixtime = int(temp_data[1][0] / 1000)
+        print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
+
 
         # handle the case where our start date is before the symbol pair listed on Binance
         if not symbol_existed and len(temp_data):
