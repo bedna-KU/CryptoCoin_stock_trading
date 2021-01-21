@@ -17,8 +17,10 @@ python3 -m pip install -r requirements.txt
     binance/get_all_pairs.py           - Get all pairs (symbols)
     binance/save_historical_data.py    - Save historical data
     csv_columns.py                     - Extract specific columns from file.csv
-    train.py                           - Train
-    predict.py                         - Predict
+    train.py                           - Train from close price
+    predict.py                         - Predict from close price
+    train_hl.py                        - Train from high/low price
+    predict_hl.py                      - Predict from high/low price
 
 ### Get all pairs
 python3 binance/get_all_pairs.py
@@ -37,13 +39,23 @@ python3 csv_columns.py --action save --columns "0 4"
 ### Filter 1. and 5. columns and show graph
 python3 csv_columns.py --action graph --columns "0 4"
 
-## Download data, learn, predict. All in one.
+## First try (Download data, learn, predict. All in one)
 ```
 python3 binance/save_historical_data.py --symbol DOGEUSDT --start "1. Dec 2019" --interval 1m
 python3 csv_columns.py --action save --columns "0 1 2 3 4 5"
 python3 train.py
 python3 predict.py
 ```
+Result ~75%
+
+## Second try (Download data, learn, predict. All in one)
+```
+python3 binance/save_historical_data.py --symbol DOGEUSDT --start "1. Dec 2019" --interval 1m
+python3 csv_columns.py --action save --columns "0 1 2 3 4 5"
+python3 train_hl.py
+python3 predict_hl.py
+```
+Result not good
 
 ## Work in progress
 
