@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
-import os
-import tensorflow as tf
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+from keras.callbacks import ModelCheckpoint, LambdaCallback
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import sys
 import csv
 import json
 import time
 import requests
-from keras.callbacks import ModelCheckpoint, LambdaCallback
-from numpy.lib.function_base import vectorize
 
+from numpy.lib.function_base import vectorize
 # Own library
-from models.model import lstm_medium
+from models.model import lstm_hl
 
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-os.system('python3 binance/download_data_for_predict.py -x DOGEUSDT -s "24 hours ago UTC" -i 1m')
+# np.set_printoptions(suppress = True)
+# np.set_printoptions(precision = 4,
+#                        threshold = 10000,
+#                        linewidth = 150)
 
 ####################################################
 # PARAMETERS
@@ -27,7 +28,7 @@ os.system('python3 binance/download_data_for_predict.py -x DOGEUSDT -s "24 hours
 INPUT_LEN = 1440
 OUTPUT_LEN = 10
 SHIFT = 10
-EPOCHS = 20
+EPOCHS = 28
 BATCH_SIZE = 128
 FILEPATH = "weights.hdf5"
 
@@ -69,18 +70,23 @@ def last_data_load (max):
 	data_rows_count = len(data)
 	print (">>> data rows count:", data_rows_count)
 
-	data_close = get_column(data, 4)
-	input_close_arr = data_close
+	data_high = get_column(data, 2)
+	data_low = get_column(data, 3)
 
-	print(">>> input_close_arr", len(input_close_arr))
+	input_high_arr = np.array(data_high)
+	input_low_arr = np.array(data_low)
 
-	# To ndarray
-	X = np.array(input_close_arr)
+	X = np.array([input_high_arr, input_low_arr], dtype = float)
+
+	print("xxx", X.shape)
+
+	X = np.reshape(X, (INPUT_LEN, 2))
+
 	encode2 = np.vectorize(encode)
-	input_close_arr = encode2(X, max)
-	return input_close_arr
+	X = encode2(X, max)
 
-# Get column from list
+	return X
+
 def get_column(matrix, i):
 	return [row[i] for row in matrix]
 
@@ -103,10 +109,7 @@ def model_load (model):
 		model.load_weights (FILEPATH)
 
 def predict (X):
-	print(">>> X", X)
-	print(">>> X.shape", X.shape)
 	X = np.expand_dims (X, axis = 0)
-	X = np.expand_dims (X, axis = 2)
 	print(">>> X.shape", X.shape)
 	result = model.predict (X, batch_size = BATCH_SIZE, verbose = 1)
 	return result
@@ -114,12 +117,12 @@ def predict (X):
 min, max = load_min_max_doge()
 min, max = float(min), float(max)
 
-model = lstm_medium (INPUT_LEN, OUTPUT_LEN)
+model = lstm_hl (INPUT_LEN, OUTPUT_LEN)
 model_load(model)
-# min_close, max_close = data_load()
+
 X = last_data_load(max)
 
-start_point = decode(X[1339], max)
+start_point = decode(X[1339][0], max)
 
 print("***", X.shape)
 result = predict(X)

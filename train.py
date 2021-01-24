@@ -4,7 +4,6 @@ import numpy as np
 import os
 import sys
 import csv
-from numpy.core.defchararray import encode
 
 from numpy.lib.function_base import vectorize
 # Own library
@@ -13,22 +12,15 @@ from models.model import lstm_medium
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# np.set_printoptions(suppress = True)
-# np.set_printoptions(precision = 4,
-#                        threshold = 10000,
-#                        linewidth = 150)
-
 ####################################################
 # PARAMETERS
 ####################################################
-
 INPUT_LEN = 1440
 OUTPUT_LEN = 10
 SHIFT = 10
 EPOCHS = 28
 BATCH_SIZE = 128
 FILEPATH = "weights.hdf5"
-
 ####################################################
 
 # Load data
@@ -40,6 +32,7 @@ def data_load ():
 		for row in reader:
 			data.append (row)
 
+	# For test cuts data
 	# data = data[500000 : ]
 
 	data_rows_count = len(data)
@@ -54,18 +47,19 @@ def data_load ():
 	print (">>> min_close", min_close)
 	print (">>> max_close", max_close)
 
+	with open('min_max_doge.csv', 'w') as f:
+		write = csv.writer(f, delimiter=',') 
+		csv_out = [min_close, max_close]
+		write.writerow(csv_out)
+		print("Save min max")
+
 	yes = True
-	# Get data from columns (time + ohlcv)
-	data_time = get_column(data, 0)
-	data_open = get_column(data, 1)
-	data_high = get_column(data, 2)
-	data_low = get_column(data, 3)
+	# data_time = get_column(data, 0)
+	# data_open = get_column(data, 1)
+	# data_high = get_column(data, 2)
+	# data_low = get_column(data, 3)
 	data_close = get_column(data, 4)
-	data_volume = get_column(data, 5)
-	# data_close = np.array(data_close)
-	# print(">>> TST", data_close.shape)
-	# encode2 = np.vectorize(encode)
-	# data_close = encode2(data_close, max_close)
+	# data_volume = get_column(data, 5)
 	loop = 0
 	input_close_arr = []
 	output_close_arr = []
@@ -81,7 +75,6 @@ def data_load ():
 
 	print(">>> count", len(input_close_arr))
 
-	# To ndarray
 	X = np.array(input_close_arr)
 	y = np.array(output_close_arr)
 	encode2 = np.vectorize(encode)
@@ -89,38 +82,16 @@ def data_load ():
 	output_close_arr = encode2(y, max_close)
 	return input_close_arr, output_close_arr
 
+# Get column from csv
 def get_column(matrix, i):
 	return [row[i] for row in matrix]
 
-# Unvectorize data
-def one_hot_decode (seq, max):
-	strings = list ()
-	for pattern in seq:
-		string = str (np.argmax (pattern))
-		strings.append (string)
-	return ' '.join (strings)
-
-# Vectorize data
-def one_hot_encode (value, max_int):
-	max_int = max_int + 1
-	value_enc = list ()
-	for seq in value:
-		pattern = list ()
-		for index in seq:
-			vector = [0 for _ in range (max_int)]
-			vector[index] = 1
-			pattern.append (vector)
-		value_enc.append (pattern)
-	return value_enc
-
-# Invert encoding
+# Decode data
 def decode (value, max):
 	return value * max
 
 # Encode data
 def encode (value, max):
-	# print ("value.shape", value.shape)
-	# print ("value", value)
 	result = float(value) / max
 	return result
 
@@ -135,21 +106,22 @@ def model_load (model):
 
 # Train model
 def model_train (model, X, y):
+	# Checkpoint
 	checkpoint = ModelCheckpoint (FILEPATH, monitor = 'loss',
 								 verbose = 1, save_best_only = True,
 								 mode = 'min')
 
+	# Print run every epoch funkcion on_epoch_end
 	print_callback = LambdaCallback (on_epoch_end = on_epoch_end)
+	# Print callback and checkpoint
 	callbacks = [print_callback, checkpoint]
 	X = np.expand_dims (X, axis = 2)
 	print (">>>", X.shape)
+	# Train and run callbacks
 	model.fit (X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
 
 model = lstm_medium (INPUT_LEN, OUTPUT_LEN)
 model_load (model)
 print (model.summary())
 X, y = data_load ()
-# exit("END")
 model_train (model, X, y)
-
-
