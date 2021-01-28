@@ -55,7 +55,7 @@ def data_load ():
 	
 	max_close_doge = 0
 	min_close_doge = 999999999
-	for row in data:
+	for row in data_doge:
 		if float(row[1]) > max_close_doge:
 			max_close_doge = float(row[1])
 		if float(row[1]) < min_close_doge:
@@ -65,7 +65,7 @@ def data_load ():
 
 	max_close_btc = 0
 	min_close_btc = 999999999
-	for row in data:
+	for row in data_btc:
 		if float(row[1]) > max_close_btc:
 			max_close_btc = float(row[1])
 		if float(row[1]) < min_close_btc:
@@ -93,29 +93,27 @@ def data_load ():
 		else:
 			input_close_doge_arr.append(input_close_btc)
 			input_close_btc_arr.append(input_close_doge)
-			output_close_doge_arr.append(output_close)
+			output_close_doge_arr.append(output_close_doge)
 			loop += SHIFT
 
 	input_close_doge_arr = np.array(input_close_doge_arr)
 	input_close_btc_arr = np.array(input_close_btc_arr)
-	print(">>> count list", len(input_high_list))
-	print(">>> count arr", len(input_high_arr))
-	print(">>> count arr shape high", input_high_arr.shape)
-	print(">>> count arr shape low", input_high_arr.shape)
-	print(">>> count arr type", type(input_high_arr))
+	print(">>> count list", len(input_close_doge_arr))
+	print(">>> count arr doge", input_close_doge_arr.shape)
+	print(">>> count arr btc", input_close_btc_arr.shape)
 	# print(">>> arr", input_high_arr)
 
 	# To ndarray
 	# input_high_arr = np.array(input_high_arr)
 	# input_low_arr = np.array(input_low_arr)
 	X = np.array([input_close_doge_arr, input_close_btc_arr], dtype = float)
-	X = np.reshape(X, (len(input_high_list), INPUT_LEN, 2))
+	X = np.reshape(X, (len(input_close_doge_arr), INPUT_LEN, 2))
 	# print(X)
-	y = np.array(output_close_arr, dtype = float)
+	y = np.array(output_close_doge_arr, dtype = float)
 	print ("+++ type(y)", type(y))
 	encode2 = np.vectorize(encode)
-	X = encode2(X, max_close)
-	y = encode2(y, max_close)
+	X = encode2(X, max_close_btc)
+	y = encode2(y, max_close_doge)
 	print(y)
 	return X, y
 

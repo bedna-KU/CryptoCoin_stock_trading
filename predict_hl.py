@@ -30,7 +30,7 @@ OUTPUT_LEN = 10
 SHIFT = 10
 EPOCHS = 28
 BATCH_SIZE = 128
-FILEPATH = "weights.hdf5"
+FILEPATH = "weights_hl.hdf5"
 
 ####################################################
 
