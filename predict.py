@@ -78,6 +78,7 @@ def last_data_load (max):
 	X = np.array(input_close_arr)
 	encode2 = np.vectorize(encode)
 	input_close_arr = encode2(X, max)
+	# print("xxx", input_close_arr)
 	return input_close_arr
 
 # Get column from list

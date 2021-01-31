@@ -171,8 +171,8 @@ klines = get_historical_klines(symbol, interval, start, end)
 print (">>> Count", len(klines))
 
 print ("Data saved!")
-with open('file_for_predict.csv', 'w') as f: 
-      
-    # using csv.writer method from CSV package 
+with open('doge_for_predict.csv', 'w') as f:
+
+    # using csv.writer method from CSV package
     write = csv.writer(f)
     write.writerows(klines)

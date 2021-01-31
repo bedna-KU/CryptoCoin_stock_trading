@@ -10,6 +10,8 @@ from numpy.lib.function_base import vectorize
 # Own library
 from models.model import lstm_hl
 
+from datetime import datetime
+
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -21,47 +23,80 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 ####################################################
 # PARAMETERS
 ####################################################
-
 INPUT_LEN = 1440
 OUTPUT_LEN = 10
 SHIFT = 10
 EPOCHS = 28
 BATCH_SIZE = 128
 FILEPATH = "weights.hdf5"
-
+# List = name : column
+DATA_CAT = {"doge" : 4, "btc" : 4}
 ####################################################
 
 # Load data
 def data_load ():
-	data_doge = []
-	# Read CSV file into array
-	with open ("data_doge.csv", newline="") as csvfile:
-		reader = csv.reader (csvfile, delimiter=',')
-		for row in reader:
-			data_doge.append (row)
+	data = {}
+	for item in DATA_CAT:
+		data[item] = []
+		# Read CSV file into array
+		with open ("data_" + item + ".csv", newline = "") as csvfile:
+			reader = csv.reader (csvfile, delimiter = ',')
+			for row in reader:
+				data[item].append (row)
 
-	data_btc = []
-	with open ("data_btc.csv", newline="") as csvfile:
-		reader = csv.reader (csvfile, delimiter=',')
-		for row in reader:
-			data_btc.append (row)
+		print("xxx", data[item][1])
 
 	# data = data[500000 : ]
 
-	data_rows_count_doge = len(data_doge)
-	print (">>> data rows count:", data_rows_count_doge)
-	data_rows_count_doge = len(data_doge)
-	print (">>> data rows count:", data_rows_count_doge)
+	data_rows_count = {}
+	for item in DATA_CAT:
+		data_rows_count[item] = len(data[item])
+		print (">>> data rows count:", data_rows_count[item])
+	print(data["doge"][510080])
+	print(data["btc"][510080])
 	
-	max_close_doge = 0
-	min_close_doge = 999999999
-	for row in data_doge:
-		if float(row[1]) > max_close_doge:
-			max_close_doge = float(row[1])
-		if float(row[1]) < min_close_doge:
-			min_close_doge = float(row[1])
-	print (">>> min_close", min_close_doge)
-	print (">>> max_close", max_close_doge)
+	a = 0
+	prev_item = 0
+	for item in data["doge"]:
+		# print(item[0])
+		if int(item[0]) - prev_item == 60 * 1000 or prev_item == 0:
+			# print("ccc")
+			a = a
+		else:
+			print("xxx", int(item[0]) - prev_item)
+			unixtime = int(item[0]) / 1000
+			print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
+			# exit("END")
+		prev_item = int(item[0])
+
+	print()
+
+	a = 0
+	prev_item = 0
+	for item in data["btc"]:
+		# print(item[0])
+		if int(item[0]) - prev_item == 60 * 1000 or prev_item == 0:
+			# print("ccc")
+			a = a
+		else:
+			print("ccc", int(item[0]) - prev_item)
+			unixtime = int(item[0]) / 1000
+			print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
+			# exit("END")
+		prev_item = int(item[0])
+	
+	exit("END")
+
+	for item in DATA_CAT:
+		max_close_doge = 0
+		min_close_doge = 999999999
+		for row in data_doge:
+			if float(row[1]) > max_close_doge:
+				max_close_doge = float(row[1])
+			if float(row[1]) < min_close_doge:
+				min_close_doge = float(row[1])
+		print (">>> min_close", min_close_doge)
+		print (">>> max_close", max_close_doge)
 
 	max_close_btc = 0
 	min_close_btc = 999999999
