@@ -151,7 +151,7 @@ print("XXX shape", X.shape)
 # print("X[1339][0]", X[1339][1], decode(X[1339][0], max_doge))
 start_point = decode(X[0][1339], max_doge)
 
-exit()
+# exit()
 
 print("***", X.shape)
 result = predict(X)
@@ -164,7 +164,7 @@ print("### start_point", start_point)
 
 sleep_anim(60)
 
-for n in range(1):
+for n in range(10):
 	print(">>> LOOP", n)
 	r = requests.get('https://api.binance.com/api/v3/ticker/price?symbol=DOGEUSDT')
 	json_data = json.loads(r.text)
