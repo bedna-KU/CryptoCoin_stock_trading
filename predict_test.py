@@ -16,8 +16,8 @@ from models.model import lstm_hl
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# os.system('python3 binance/download_doge_for_predict.py -x DOGEUSDT -s "24 hours ago UTC" -i 1m')
-# os.system('python3 binance/download_btc_for_predict.py -x BTCUSDT -s "24 hours ago UTC" -i 1m')
+os.system('python3 binance/download_doge_for_predict.py -x DOGEUSDT -s "24 hours ago UTC" -i 1m')
+os.system('python3 binance/download_btc_for_predict.py -x BTCUSDT -s "24 hours ago UTC" -i 1m')
 
 ####################################################
 # PARAMETERS
@@ -102,9 +102,8 @@ def last_data_load (max_doge, max_btc):
 	# X = np.concatenate((input_doge_arr_enc, input_btc_arr_enc), axis=1)
 
 	# X = np.reshape(X, (INPUT_LEN, 2))
-	print("eee", X[0])
-	print("eee", X[1])
 	print("eee", X)
+	exit()
 
 	X = np.reshape(X, (1, INPUT_LEN, 2))
 	print("eee", X)
