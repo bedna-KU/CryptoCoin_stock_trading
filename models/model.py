@@ -55,9 +55,10 @@ def lstm_medium (input_len, output_len):
 	return model
 
 def lstm_hl (input_len, output_len):
+	print("XXX input_len", input_len)
 	# Initialising the RNN
 	model = Sequential()# Adding the first LSTM layer and some Dropout regularisation
-	model.add(LSTM(units = 50, return_sequences = True, input_shape = (input_len, 2)))
+	model.add(LSTM(units = 50, return_sequences = True, input_shape = (2, input_len)))
 
 	# Adding a second LSTM layer and some Dropout regularisation
 	model.add(LSTM(units = 50, return_sequences = True))

@@ -16,8 +16,8 @@ from models.model import lstm_hl
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-os.system('python3 binance/download_doge_for_predict.py -x DOGEUSDT -s "24 hours ago UTC" -i 1m')
-os.system('python3 binance/download_btc_for_predict.py -x BTCUSDT -s "24 hours ago UTC" -i 1m')
+os.system('python3 binance/download_doge_for_predict.py -x DOGEUSDT -s "24 hours 10 minutes ago UTC" -i 1m')
+os.system('python3 binance/download_btc_for_predict.py -x BTCUSDT -s "24 hours 10 minutes ago UTC" -i 1m')
 
 ####################################################
 # PARAMETERS
@@ -27,7 +27,8 @@ OUTPUT_LEN = 10
 SHIFT = 10
 EPOCHS = 11
 BATCH_SIZE = 128
-FILEPATH = "weights_hl.hdf5"# List = name : column
+FILEPATH = "weights_doge_btc.hdf5"
+# List = name : column
 DATA_CAT = {"doge" : 4, "btc" : 4}
 ####################################################
 
@@ -39,7 +40,7 @@ def sleep_anim(seconds):
     go = True
     while go:
         now = time.time()
-        print(symbols[iteration], seconds - int(now - start), end="\r", flush=True)
+        print(symbols[iteration], str(seconds - int(now - start)).zfill(2), end="\r", flush=True)
         time.sleep(0.3)
         iteration += 1
         if iteration > len(symbols) - 1:
@@ -69,11 +70,15 @@ def last_data_load (max_doge, max_btc):
 		for row in reader:
 			data_doge.append (row)
 
+	data_doge = data_doge[ : 1440]
+	
 	data_btc = []
 	with open ("btc_for_predict.csv", newline="") as csvfile:
 		reader = csv.reader (csvfile, delimiter=',')
 		for row in reader:
 			data_btc.append (row)
+
+	data_btc = data_btc[ : 1440]
 
 	data_doge_rows_count = len(data_doge)
 	data_btc_rows_count = len(data_btc)
@@ -96,16 +101,17 @@ def last_data_load (max_doge, max_btc):
 	input_doge_arr_enc = encode2(input_doge_arr, max_doge)
 	input_btc_arr_enc = encode2(input_btc_arr, max_btc)
 
+	# X = np.array([input_doge_arr_enc, input_btc_arr_enc])
+	
 	# print("aaa", input_doge_arr)
 
 	X = np.array(([input_doge_arr_enc], [input_btc_arr_enc]), dtype = float)
 	# X = np.concatenate((input_doge_arr_enc, input_btc_arr_enc), axis=1)
 
 	# X = np.reshape(X, (INPUT_LEN, 2))
-	print("eee", X)
-	exit()
+	# print("eee", X)
 
-	X = np.reshape(X, (1, INPUT_LEN, 2))
+	X = np.reshape(X, (1, 2, INPUT_LEN))
 	print("eee", X)
 	print("eee", X.shape)
 	# exit()
@@ -149,8 +155,8 @@ X = last_data_load(max_doge, max_btc)
 print("XXX shape", X.shape)
 # print("XXX", decode(X[1339][0], max_doge))
 # print("X[1339][0]", X[1339][1], decode(X[1339][0], max_doge))
-start_point = decode(X[0][1339], max_doge)
-
+start_point = decode(X[0][0][1339], max_doge)
+# print("qqq", start_point)
 # exit()
 
 print("***", X.shape)

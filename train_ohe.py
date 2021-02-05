@@ -149,5 +149,3 @@ print (model.summary())
 X, y = data_load ()
 # exit("END")
 model_train (model, X, y)
-
-
