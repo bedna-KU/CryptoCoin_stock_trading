@@ -7,9 +7,11 @@ import sys
 import csv
 import json
 import time
+from numpy.lib.type_check import real
 import requests
 
 from numpy.lib.function_base import vectorize
+from tensorflow.python.keras.backend import dtype
 # Own library
 from models.model import lstm_hl
 
@@ -63,20 +65,27 @@ def load_min_max_doge ():
 # Load last data for prefict
 def last_data_load (max_doge, max_btc):
 	print(">>>>>>> last_data_load")
-	data_doge = []
+	data_doge_raw = []
 	# Read CSV file into array
 	with open ("doge_for_predict.csv", newline="") as csvfile:
 		reader = csv.reader (csvfile, delimiter=',')
 		for row in reader:
-			data_doge.append (row)
+			data_doge_raw.append (row)
 
+	data_doge = get_column(data_doge_raw, 4)
+
+	data_real = data_doge[1440 : ]
 	data_doge = data_doge[ : 1440]
-	
-	data_btc = []
+	print("===", len(data_doge))
+	print("===", len(data_real))
+
+	data_btc_raw = []
 	with open ("btc_for_predict.csv", newline="") as csvfile:
 		reader = csv.reader (csvfile, delimiter=',')
 		for row in reader:
-			data_btc.append (row)
+			data_btc_raw.append (row)
+
+	data_btc = get_column(data_btc_raw, 4)
 
 	data_btc = data_btc[ : 1440]
 
@@ -85,37 +94,21 @@ def last_data_load (max_doge, max_btc):
 	print (">>> data doge rows count:", data_doge_rows_count)
 	print (">>> data btc rows count:", data_btc_rows_count)
 
-	doge_close = get_column(data_doge, 4)
-	btc_close = get_column(data_btc, 4)
+	input_doge_arr = np.array(data_doge)
+	input_btc_arr = np.array(data_btc)
 
-	input_doge_arr = np.array(doge_close)
-	input_btc_arr = np.array(btc_close)
-
-	# input_doge_arr = np.reshape(input_doge_arr, (1440, 1))
-	# input_doge_arr = np.reshape(input_doge_arr, (1, 1440))
-	# input_btc_arr = np.reshape(input_btc_arr, (1440, 1))
-	# input_btc_arr = np.reshape(input_btc_arr, (1, 1440))
 	print("shape", input_btc_arr.shape)
 
 	encode2 = np.vectorize(encode)
-	input_doge_arr_enc = encode2(input_doge_arr, max_doge)
-	input_btc_arr_enc = encode2(input_btc_arr, max_btc)
-
-	# X = np.array([input_doge_arr_enc, input_btc_arr_enc])
-	
-	# print("aaa", input_doge_arr)
+	input_doge_arr_enc = encode2(data_doge, max_doge)
+	input_btc_arr_enc = encode2(data_btc, max_btc)
 
 	X = np.array(([input_doge_arr_enc], [input_btc_arr_enc]), dtype = float)
-	# X = np.concatenate((input_doge_arr_enc, input_btc_arr_enc), axis=1)
-
-	# X = np.reshape(X, (INPUT_LEN, 2))
-	# print("eee", X)
 
 	X = np.reshape(X, (1, 2, INPUT_LEN))
 	print("eee", X)
 	print("eee", X.shape)
-	# exit()
-	return X
+	return X, data_real
 
 def get_column(matrix, i):
 	return [row[i] for row in matrix]
@@ -149,39 +142,20 @@ print("max_btc", max_btc)
 model = lstm_hl (INPUT_LEN, OUTPUT_LEN)
 model_load(model)
 
-X = last_data_load(max_doge, max_btc)
+X, data_real = last_data_load(max_doge, max_btc)
 
-# print("XXX", decode(X[0][1440][0], max_doge))
 print("XXX shape", X.shape)
-# print("XXX", decode(X[1339][0], max_doge))
-# print("X[1339][0]", X[1339][1], decode(X[1339][0], max_doge))
-start_point = decode(X[0][0][1339], max_doge)
-# print("qqq", start_point)
-# exit()
 
-print("***", X.shape)
+start_point = decode(X[0][0][1439], max_doge)
+print("### start_point", start_point)
 result = predict(X)
 result_decoded = decode(result[0], max_doge)
 result_decoded = np.insert(result_decoded, 0, start_point)
 print("RESULT", result_decoded)
+data_real = np.array(data_real, dtype = float)
+data_real = np.insert(data_real, 0, start_point)
+print("REAL", data_real)
 
-real = start_point
-print("### start_point", start_point)
-
-sleep_anim(60)
-
-for n in range(10):
-	print(">>> LOOP", n)
-	r = requests.get('https://api.binance.com/api/v3/ticker/price?symbol=DOGEUSDT')
-	json_data = json.loads(r.text)
-	price = json_data["price"]
-	print (price)
-	print("RESULT", result_decoded)
-	real = np.append(real, float(price))
-	print("REAL", real)
-	sleep_anim(60)
-
+plt.plot(data_real, c = 'green')
 plt.plot(result_decoded, c = 'blue')
-plt.plot(real, c = 'green')
-plt.text(2,4,'This text starts at point (2,4)')
 plt.show()
