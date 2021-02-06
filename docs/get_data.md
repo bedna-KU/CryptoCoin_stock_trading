@@ -1,4 +1,4 @@
-#Get data
+# Get data
 
 ## Get all pairs
 python3 binance/done_get_all_pairs.py
