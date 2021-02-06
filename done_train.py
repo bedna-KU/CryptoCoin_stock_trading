@@ -48,18 +48,20 @@ def data_load ():
 	print (">>> max_close", max_close)
 
 	with open('min_max_doge.csv', 'w') as f:
-		write = csv.writer(f, delimiter=',') 
+		write = csv.writer(f, delimiter=',')
 		csv_out = [min_close, max_close]
 		write.writerow(csv_out)
 		print("Save min max")
 
-	yes = True
+	# Get column from csv
 	# data_time = get_column(data, 0)
 	# data_open = get_column(data, 1)
 	# data_high = get_column(data, 2)
 	# data_low = get_column(data, 3)
 	data_close = get_column(data, 4)
 	# data_volume = get_column(data, 5)
+
+	yes = True
 	loop = 0
 	input_close_arr = []
 	output_close_arr = []

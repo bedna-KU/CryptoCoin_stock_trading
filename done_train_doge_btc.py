@@ -133,8 +133,6 @@ def data_load ():
 		print(index)
 		X=np.append(X, [input_close_arr["doge"][index], input_close_arr["btc"][index]], axis = 0)
 	X = np.reshape(X, (len(input_close_arr["btc"]),2 ,INPUT_LEN))
-	print("X", X)
-	print("X shape", X.shape)
 
 	y = np.array(output_close_arr["doge"], dtype = float)
 	y = encode2(y, max_close["doge"])
@@ -149,8 +147,6 @@ def decode (value, max):
 
 # Encode data
 def encode (value, max):
-	# print ("value.shape", value.shape)
-	# print ("value", value)
 	result = float(value) / max
 	return result
 
@@ -171,25 +167,12 @@ def model_train (model, X, y):
 
 	print_callback = LambdaCallback (on_epoch_end = on_epoch_end)
 	callbacks = [print_callback, checkpoint]
-	# X = np.expand_dims (X, axis = 3)
-	# print("ccc", Xh.shape)
-	# print("ccc", Xh)
-	# X = Xh
-	# X = np.vstack((Xh, Xl)).T
-	# X = np.insert(X, 1, Xl)
-	print ("+++", X.shape)
-	print ("+++", type(X))
-	print ("+++", type(y))
 	model.fit (X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
 
 model = lstm_hl (INPUT_LEN, OUTPUT_LEN)
 model_load (model)
 print (model.summary())
 X, y = data_load ()
-# print("xxx", Xh.shape)
-# print("xxx", Xl.shape)
-# print("xxx", y.shape)
-# exit("END")
 model_train (model, X, y)
 
 

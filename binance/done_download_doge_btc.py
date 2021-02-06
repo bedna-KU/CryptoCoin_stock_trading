@@ -78,7 +78,7 @@ def get_historical_klines(symbol, interval, start_str, end_str=None):
     """
     # create the Binance client, no need for api key
     # print(binance_api_key)
-    client = Client(api_key=binance_api_key, api_secret=binance_api_secret)
+    client = Client()
 
     # init our list
     output_data = []
@@ -148,6 +148,11 @@ klines_btc = get_historical_klines("BTCUSDT", "1m", "26. Dec 2020")
 
 print (">>> Count DOGE", len(klines_doge))
 print (">>> Count BTC", len(klines_btc))
+
+# Difference in the number of lines
+print(">>> Align the number of rows")
+difference_lines = len(klines_btc) - len(klines_doge)
+klines_btc = klines_btc[: - difference_lines]
 
 with open('data_doge.csv', 'w') as f:
 

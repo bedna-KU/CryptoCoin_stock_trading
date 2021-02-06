@@ -64,7 +64,7 @@ def load_min_max_doge ():
 
 # Load last data for prefict
 def last_data_load (max_doge, max_btc):
-	print(">>>>>>> last_data_load")
+	print(">>> last_data_load")
 	data_doge_raw = []
 	# Read CSV file into array
 	with open ("doge_for_predict.csv", newline="") as csvfile:
