@@ -29,7 +29,7 @@ python3 done_csv_columns.py --action save --columns "0 1 2 3 4 5"
 python3 done_train.py
 python3 done_predict.py
 ```
-You must wait 10 minutes for result
+You have to wait 10 minutes for the result 
 
 result ~75%
 
@@ -42,11 +42,11 @@ python3 done_train_doge_btc.py
 python3 done_predict_doge_btc.py
 
 ```
-result is every bad, but interesting
+The result is always bad, but interesting 
 
 ## Work in progess
 
-### :red_circle: Big data error :red_circle:
+## :red_circle: Big data error :red_circle:
 I tested the completeness of the data and found a few gaps there.
 Is this bug or not?
 
@@ -56,12 +56,6 @@ For chceck data I write skript:
 Script check data for gaps every minute.
 A very bad result is the missing data:
 ```
->>> 1575158400000
->>> 1970-01-01 00:00:00
->>> 2019-12-01 00:00:00
->>> 1575158400000
->>> Time delta (1m) 26252640
-
 >>> 1581213540000
 >>> 1581217200000
 >>> 2020-02-09 01:59:00
