@@ -5,7 +5,7 @@ python3 done_csv_columns.py --action save --columns "0 1 2 3 4 5"
 python3 done_train.py
 python3 done_predict.py
 ```
-You must wait 10 minutes for result
+You have to wait 10 minutes for the result
 
 result ~75%
 
@@ -18,4 +18,4 @@ python3 done_train_doge_btc.py
 python3 done_predict_doge_btc.py
 
 ```
-result is every bad, but interesting
+The result is always bad, but interesting
