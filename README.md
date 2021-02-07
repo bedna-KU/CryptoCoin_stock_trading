@@ -4,17 +4,10 @@
 # CryptoCoin_stock_trading
 Automatic stock trading with cryptocoins based on AI
 
-## Installation
-[See](docs/installation.md)
-
-## Get data
-[See](docs/get_data.md)
-
-## Known bugs
-[See](docs/known_bugs.md)
-
-## Experiments
-[See](docs/experiments.md)
+## [Installation](docs/installation.md)
+## [Get data](docs/get_data.md)
+## [Known bugs](docs/known_bugs.md)
+## [Experiments](docs/experiments.md)
 
 ## Work in progress
 
