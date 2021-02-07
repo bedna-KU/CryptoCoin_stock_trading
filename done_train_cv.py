@@ -36,7 +36,7 @@ def data_load ():
 
 	# Read CSV file into array
 	data = []
-	with open ("file_doge_year_test.csv", newline = "") as csvfile:
+	with open ("file_doge_year.csv", newline = "") as csvfile:
 		reader = csv.reader (csvfile, delimiter = ',')
 		for row in reader:
 			data.append (row)
