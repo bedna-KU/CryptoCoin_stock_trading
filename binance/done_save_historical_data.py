@@ -20,6 +20,8 @@ ap.add_argument ("-e", "--end", type = str, required = False,
 	help = "end date fo download")
 ap.add_argument ("-i", "--interval", type = str, required = True, choices=list_of_intervals,
 	help = "interval")
+ap.add_argument ("-f", "--file", type = str, required = False,
+	help = "filename for save")
 args = vars (ap.parse_args ())
 
 # Args parse
@@ -29,7 +31,11 @@ interval = args["interval"]
 if args["end"]:
     end = args["end"]
 else:
-	end= "now"
+	end = "now"
+if args["file"]:
+    filename = args["file"]
+else:
+	filename = "file.csv"
 
 def date_to_milliseconds(date_str):
     """Convert UTC date to milliseconds
@@ -173,8 +179,8 @@ klines = get_historical_klines(symbol, interval, start, end)
 print (">>> Count", len(klines))
 
 print ("Data saved!")
-with open('file.csv', 'w') as f: 
-      
-    # using csv.writer method from CSV package 
+with open(filename, 'w') as f:
+
+    # using csv.writer method from CSV package
     write = csv.writer(f)
     write.writerows(klines)

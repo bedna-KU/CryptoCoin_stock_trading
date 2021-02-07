@@ -7,7 +7,7 @@ from math import log
 from datetime import datetime
 import numpy as np
 
-def prRed(skk): print("\033[91m{}\033[00m" .format(skk)) 
+def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
 
 # Set input args
 list_of_actions = ["show", "save", "graph"]
@@ -16,18 +16,30 @@ ap.add_argument("-a", "--action", type = str, required = True, choices = list_of
 	help = "select action")
 ap.add_argument("-c", "--columns", type = str, required = True,
 	help = "select columns")
+ap.add_argument ("-i", "--input", type = str, required = False,
+	help = "filename for read")
+ap.add_argument ("-o", "--output", type = str, required = False,
+	help = "filename for save")
 args = vars(ap.parse_args())
 
 # Args parse
 action = args["action"]
 columns = args["columns"]
+if args["input"]:
+    inputfile = args["input"]
+else:
+	inputfile = "file.csv"
+if args["output"]:
+    outputfile = args["output"]
+else:
+	outputfile = "file_new.csv"
 
 # Convert columns to integers list
 columns_list = columns.split()
 columns_list_int = list(map(int, columns_list))
 
 # Read CSV file
-with open('file.csv', newline = '') as f:
+with open(inputfile, newline = '') as f:
     reader = csv.reader(f)
     data_list = list(reader)
 
@@ -52,8 +64,8 @@ if action == "show":
 
 # Save file to new CSV file_new.csv
 if action == "save":
-    with open('file_new.csv', 'w') as f:
-        write = csv.writer(f) 
+    with open(outputfile, 'w') as f:
+        write = csv.writer(f)
         write.writerows(data_list_columns)
         print("Rows:", len(data_list_columns))
         print("CSV file saved!")
@@ -64,7 +76,7 @@ if action == "graph":
     for s in data_list_columns:
         x_list.append (float(s[0]) / 1000)
         y_list.append (float(s[1]))
-    
+
     dates = [datetime.fromtimestamp(ts) for ts in x_list]
     plt.subplots_adjust(bottom = 0.2)
     plt.xticks(rotation = 25)
@@ -73,5 +85,5 @@ if action == "graph":
     ax.xaxis.set_major_formatter(xfmt)
 
     plt.plot(dates, y_list)
-    
+
     plt.show()
