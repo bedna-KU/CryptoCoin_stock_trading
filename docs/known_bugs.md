@@ -8,12 +8,6 @@ For chceck data I write skript:
 Script check data for gaps every minute.
 A very bad result is the missing data:
 ```
->>> 1575158400000
->>> 1970-01-01 00:00:00
->>> 2019-12-01 00:00:00
->>> 1575158400000
->>> Time delta (1m) 26252640
-
 >>> 1581213540000
 >>> 1581217200000
 >>> 2020-02-09 01:59:00
