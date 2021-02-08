@@ -47,23 +47,24 @@ def data_load():
 		print(">>> data rows count ({}):".format(item), data_rows_count[item])
 
 	# Check one minute interval in doge
-	prev_item = 0
+	prev_item = int(data["doge"][0][0])
 	for item in data["doge"]:
+		print("---", int(item[0]) - prev_item)
 		if int(item[0]) - prev_item > 60 * 1000 or prev_item == 0:
 			print(">>>", int(item[0]) - prev_item)
 			unixtime = int(item[0]) / 1000
 			print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
-			# exit("Error time")
+			exit("Error time doge")
 		prev_item = int(item[0])
 
 	# Check one minute interval in btc
-	prev_item = 0
+	prev_item = int(data["btc"][0][0])
 	for item in data["btc"]:
 		if int(item[0]) - prev_item > 60 * 1000 or prev_item == 0:
-			print("ccc", int(item[0]) - prev_item)
+			print(">>>", int(item[0]) - prev_item)
 			unixtime = int(item[0]) / 1000
 			print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
-			# exit("Error time")
+			exit("Error time btc")
 		prev_item = int(item[0])
 
 	# Get min/max
@@ -80,7 +81,7 @@ def data_load():
 		print(">>> min_close " + item, min_close[item])
 		print(">>> max_close " + item, max_close[item])
 
-	with open('min_max.csv', 'w') as f:
+	with open('min_max_doge_btc.csv', 'w') as f:
 		write = csv.writer(f, delimiter=',')
 		for item in DATA_CAT:
 			csv_out = [min_close[item], max_close[item]]

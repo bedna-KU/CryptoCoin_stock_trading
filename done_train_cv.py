@@ -47,7 +47,6 @@ def data_load ():
 	doge_max = 0
 	doge_min = 999999999
 	for row in data:
-		# print(row)
 		if float(row[4]) > doge_max:
 			doge_max = float(row[4])
 		if float(row[4]) < doge_min:
@@ -64,7 +63,7 @@ def data_load ():
 			volume_min = float(row[5])
 	print (">>> VOLUME min", volume_min)
 	print (">>> VOLUME max", volume_max)
-	with open('min_max_doge.csv', 'w') as f:
+	with open('min_max_close_volume.csv', 'w') as f:
 		write = csv.writer(f, delimiter=',')
 		csv_out = [doge_min, doge_max]
 		write.writerow(csv_out)
@@ -101,7 +100,7 @@ def data_load ():
 	print(">>> count list", len(input_first_arr))
 
 	encode2 = np.vectorize(encode)
-	input_second_arr = encode2(input_first_arr, doge_max)
+	input_first_arr = encode2(input_first_arr, doge_max)
 	input_second_arr = encode2(input_second_arr, volume_max)
 
 	X = np.array([input_first_arr[0], input_second_arr[0]])
