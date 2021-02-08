@@ -52,7 +52,7 @@ def sleep_anim(seconds):
 
 def load_min_max():
 	# Read CSV file into array
-	with open("min_max.csv", newline="") as csvfile:
+	with open("min_max_doge_btc.csv", newline="") as csvfile:
 		reader = csv.reader(csvfile, delimiter=',')
 		row1 = next(reader)
 		row2 = next(reader)
