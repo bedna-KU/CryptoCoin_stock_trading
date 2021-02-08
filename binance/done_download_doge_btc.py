@@ -142,9 +142,9 @@ def get_historical_klines(symbol, interval, start_str, end_str=None):
 print (">>> Start downloading")
 
 print ("DOGE")
-klines_doge = get_historical_klines("DOGEUSDT", "1m", "26. Dec 2020")
+klines_doge = get_historical_klines("DOGEUSDT", "1m", "27. Dec 2020")
 print ("BTC")
-klines_btc = get_historical_klines("BTCUSDT", "1m", "26. Dec 2020")
+klines_btc = get_historical_klines("BTCUSDT", "1m", "27. Dec 2020")
 
 print (">>> Count DOGE", len(klines_doge))
 print (">>> Count BTC", len(klines_btc))

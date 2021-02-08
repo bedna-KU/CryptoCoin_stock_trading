@@ -50,10 +50,10 @@ def sleep_anim(seconds):
         if now - start > seconds:
             go = False
 
-def load_min_max_doge ():
+def load_min_max():
 	# Read CSV file into array
-	with open ("min_max_doge.csv", newline="") as csvfile:
-		reader = csv.reader (csvfile, delimiter=',')
+	with open("min_max.csv", newline="") as csvfile:
+		reader = csv.reader(csvfile, delimiter=',')
 		row1 = next(reader)
 		row2 = next(reader)
 		min_doge = row1[0]
@@ -63,27 +63,27 @@ def load_min_max_doge ():
 	return min_doge, max_doge, min_btc, max_btc
 
 # Load last data for prefict
-def last_data_load (max_doge, max_btc):
+def last_data_load(max_doge, max_btc):
 	print(">>> last_data_load")
 	data_doge_raw = []
 	# Read CSV file into array
-	with open ("doge_for_predict.csv", newline="") as csvfile:
-		reader = csv.reader (csvfile, delimiter=',')
+	with open("doge_for_predict.csv", newline="") as csvfile:
+		reader = csv.reader(csvfile, delimiter=',')
 		for row in reader:
-			data_doge_raw.append (row)
+			data_doge_raw.append(row)
 
 	data_doge = get_column(data_doge_raw, 4)
 
 	data_real = data_doge[1440 : ]
 	data_doge = data_doge[ : 1440]
-	print("===", len(data_doge))
-	print("===", len(data_real))
+	print(">>> len(data_doge)", len(data_doge))
+	print(">>> len(data_real)", len(data_real))
 
 	data_btc_raw = []
-	with open ("btc_for_predict.csv", newline="") as csvfile:
-		reader = csv.reader (csvfile, delimiter=',')
+	with open("btc_for_predict.csv", newline="") as csvfile:
+		reader = csv.reader(csvfile, delimiter=',')
 		for row in reader:
-			data_btc_raw.append (row)
+			data_btc_raw.append(row)
 
 	data_btc = get_column(data_btc_raw, 4)
 
@@ -91,63 +91,61 @@ def last_data_load (max_doge, max_btc):
 
 	data_doge_rows_count = len(data_doge)
 	data_btc_rows_count = len(data_btc)
-	print (">>> data doge rows count:", data_doge_rows_count)
-	print (">>> data btc rows count:", data_btc_rows_count)
+	print(">>> data doge rows count:", data_doge_rows_count)
+	print(">>> data btc rows count:", data_btc_rows_count)
 
 	input_doge_arr = np.array(data_doge)
 	input_btc_arr = np.array(data_btc)
 
-	print("shape", input_btc_arr.shape)
+	print("shape", input_doge_arr.shape)
 
 	encode2 = np.vectorize(encode)
-	input_doge_arr_enc = encode2(data_doge, max_doge)
-	input_btc_arr_enc = encode2(data_btc, max_btc)
+	input_doge_arr_enc = encode2(input_doge_arr, max_doge)
+	input_btc_arr_enc = encode2(input_btc_arr, max_btc)
 
 	X = np.array(([input_doge_arr_enc], [input_btc_arr_enc]), dtype = float)
 
 	X = np.reshape(X, (1, 2, INPUT_LEN))
-	print("eee", X)
-	print("eee", X.shape)
+	print(">>> X", X)
+	print(">>> X.shape", X.shape)
 	return X, data_real
 
 def get_column(matrix, i):
 	return [row[i] for row in matrix]
 
 # Invert encoding
-def decode (value, max):
+def decode(value, max):
 	return value * max
 
 # Encode data
-def encode (value, max):
+def encode(value, max):
 	result = float(value) / max
 	return result
 
 # Load trained weights
-def model_load (model):
-	if os.path.exists (FILEPATH):
-		model.load_weights (FILEPATH)
+def model_load(model):
+	if os.path.exists(FILEPATH):
+		model.load_weights(FILEPATH)
 
-def predict (X):
-	# X = np.expand_dims (X, axis = 0)
-	print(">>> X.shape", X.shape)
-	result = model.predict (X, batch_size = BATCH_SIZE, verbose = 1)
+def predict(X):
+	# X = np.expand_dims(X, axis = 0)
+	print(">>> X +++", X)
+	result = model.predict(X, batch_size = BATCH_SIZE, verbose = 1)
 	return result
 
-min_doge, max_doge, min_btc, max_btc = load_min_max_doge()
+min_doge, max_doge, min_btc, max_btc = load_min_max()
 min_doge, max_doge, min_btc, max_btc = float(min_doge), float(max_doge), float(min_btc), float(max_btc)
 
 print("max_doge", max_doge)
 print("max_btc", max_btc)
 
-model = lstm_hl (INPUT_LEN, OUTPUT_LEN)
+model = lstm_hl(INPUT_LEN, OUTPUT_LEN)
 model_load(model)
 
 X, data_real = last_data_load(max_doge, max_btc)
 
-print("XXX shape", X.shape)
-
 start_point = decode(X[0][0][1439], max_doge)
-print("### start_point", start_point)
+print(">>> start_point", start_point)
 result = predict(X)
 result_decoded = decode(result[0], max_doge)
 result_decoded = np.insert(result_decoded, 0, start_point)

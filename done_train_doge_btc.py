@@ -29,47 +29,41 @@ DATA_CAT = {"doge" : 4, "btc" : 4}
 ####################################################
 
 # Load data
-def data_load ():
+def data_load():
 	data = {}
 	for item in DATA_CAT:
 		data[item] = []
 		# Read CSV file into array
-		with open ("data_" + item + ".csv", newline = "") as csvfile:
-			reader = csv.reader (csvfile, delimiter = ',')
+		with open("data_" + item + ".csv", newline = "") as csvfile:
+			reader = csv.reader(csvfile, delimiter = ',')
 			for row in reader:
-				data[item].append (row)
+				data[item].append(row)
 
 	# data = data[500000 : ]
 
 	data_rows_count = {}
 	for item in DATA_CAT:
 		data_rows_count[item] = len(data[item])
-		print (">>> data rows count:", data_rows_count[item])
+		print(">>> data rows count ({}):".format(item), data_rows_count[item])
 
 	# Check one minute interval in doge
-	a = 0
 	prev_item = 0
 	for item in data["doge"]:
-		if int(item[0]) - prev_item == 60 * 1000 or prev_item == 0:
-			a = a
-		else:
-			print("xxx", int(item[0]) - prev_item)
+		if int(item[0]) - prev_item > 60 * 1000 or prev_item == 0:
+			print(">>>", int(item[0]) - prev_item)
 			unixtime = int(item[0]) / 1000
 			print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
-			exit("Error time")
+			# exit("Error time")
 		prev_item = int(item[0])
 
-	# Check one minute interval in doge
-	a = 0
+	# Check one minute interval in btc
 	prev_item = 0
 	for item in data["btc"]:
-		if int(item[0]) - prev_item == 60 * 1000 or prev_item == 0:
-			a = a
-		else:
+		if int(item[0]) - prev_item > 60 * 1000 or prev_item == 0:
 			print("ccc", int(item[0]) - prev_item)
 			unixtime = int(item[0]) / 1000
 			print(">>>", datetime.utcfromtimestamp(unixtime).strftime('%Y-%m-%d %H:%M:%S'))
-			exit("Error time")
+			# exit("Error time")
 		prev_item = int(item[0])
 
 	# Get min/max
@@ -83,10 +77,10 @@ def data_load ():
 				max_close[item] = float(row[4])
 			if float(row[4]) < min_close[item]:
 				min_close[item] = float(row[4])
-		print (">>> min_close " + item, min_close[item])
-		print (">>> max_close " + item, max_close[item])
+		print(">>> min_close " + item, min_close[item])
+		print(">>> max_close " + item, max_close[item])
 
-	with open('min_max_doge.csv', 'w') as f:
+	with open('min_max.csv', 'w') as f:
 		write = csv.writer(f, delimiter=',')
 		for item in DATA_CAT:
 			csv_out = [min_close[item], max_close[item]]
@@ -132,7 +126,7 @@ def data_load ():
 	for index in range(1, len(input_close_arr["doge"])):
 		print(index)
 		X=np.append(X, [input_close_arr["doge"][index], input_close_arr["btc"][index]], axis = 0)
-	X = np.reshape(X, (len(input_close_arr["btc"]),2 ,INPUT_LEN))
+	X = np.reshape(X, (len(input_close_arr["doge"]),2 ,INPUT_LEN))
 
 	y = np.array(output_close_arr["doge"], dtype = float)
 	y = encode2(y, max_close["doge"])
@@ -142,37 +136,37 @@ def get_column(matrix, i):
 	return [row[i] for row in matrix]
 
 # Invert encoding
-def decode (value, max):
+def decode(value, max):
 	return value * max
 
 # Encode data
-def encode (value, max):
+def encode(value, max):
 	result = float(value) / max
 	return result
 
 # Run evry epoch
-def on_epoch_end (epoch, logs):
-	print (">>>LOGS>>>", logs)
+def on_epoch_end(epoch, logs):
+	print(">>>LOGS>>>", logs)
 
 # Load trained weights
-def model_load (model):
-	if os.path.exists (FILEPATH):
-		model.load_weights (FILEPATH)
+def model_load(model):
+	if os.path.exists(FILEPATH):
+		model.load_weights(FILEPATH)
 
 # Train model
-def model_train (model, X, y):
-	checkpoint = ModelCheckpoint (FILEPATH, monitor = 'loss',
+def model_train(model, X, y):
+	checkpoint = ModelCheckpoint(FILEPATH, monitor = 'loss',
 								 verbose = 1, save_best_only = True,
 								 mode = 'min')
 
-	print_callback = LambdaCallback (on_epoch_end = on_epoch_end)
+	print_callback = LambdaCallback(on_epoch_end = on_epoch_end)
 	callbacks = [print_callback, checkpoint]
-	model.fit (X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
+	model.fit(X, y, batch_size = BATCH_SIZE, epochs = EPOCHS, callbacks = callbacks)
 
-model = lstm_hl (INPUT_LEN, OUTPUT_LEN)
-model_load (model)
-print (model.summary())
-X, y = data_load ()
-model_train (model, X, y)
+model = lstm_hl(INPUT_LEN, OUTPUT_LEN)
+model_load(model)
+print(model.summary())
+X, y = data_load()
+model_train(model, X, y)
 
 
