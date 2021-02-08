@@ -128,8 +128,6 @@ def model_load(model):
 		model.load_weights(FILEPATH)
 
 def predict(X):
-	# X = np.expand_dims(X, axis = 0)
-	print(">>> X +++", X)
 	result = model.predict(X, batch_size = BATCH_SIZE, verbose = 1)
 	return result
 
