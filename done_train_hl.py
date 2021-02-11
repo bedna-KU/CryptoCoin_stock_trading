@@ -90,40 +90,17 @@ def data_load ():
 	X = np.array([input_high_doge_arr[0], input_low_doge_arr[0]])
 	for index in range(1, len(input_high_doge_arr)):
 		print(index)
-		X=np.append(X, [input_high_doge_arr[index], input_low_doge_arr[index]], axis = 0)
+		X = np.append(X, [input_high_doge_arr[index], input_low_doge_arr[index]], axis = 0)
 	X = np.reshape(X, (len(input_high_doge_arr),2 ,INPUT_LEN))
 
 	print(X)
 	y = np.array(output_close_doge_arr, dtype = float)
-	encode2 = np.vectorize(encode)
-	X = encode2(X, doge_max)
 	y = encode2(y, doge_max)
 	print(y)
 	return X, y
 
 def get_column(matrix, i):
 	return [row[i] for row in matrix]
-
-# Unvectorize data
-def one_hot_decode (seq, max):
-	strings = list ()
-	for pattern in seq:
-		string = str (np.argmax (pattern))
-		strings.append (string)
-	return ' '.join (strings)
-
-# Vectorize data
-def one_hot_encode (value, max_int):
-	max_int = max_int + 1
-	value_enc = list ()
-	for seq in value:
-		pattern = list ()
-		for index in seq:
-			vector = [0 for _ in range (max_int)]
-			vector[index] = 1
-			pattern.append (vector)
-		value_enc.append (pattern)
-	return value_enc
 
 # Invert encoding
 def decode (value, max):

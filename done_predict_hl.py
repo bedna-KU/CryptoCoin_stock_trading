@@ -18,7 +18,7 @@ from models.model import lstm_hl
 # Suppress TensorFlow messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-os.system('python3 binance/download_doge_for_predict.py -x DOGEUSDT -s "24 hours 10 minutes ago UTC" -i 1m')
+# os.system('python3 binance/download_doge_for_predict.py -x DOGEUSDT -s "24 hours 10 minutes ago UTC" -i 1m')
 
 ####################################################
 # PARAMETERS
@@ -67,6 +67,8 @@ def last_data_load (max_doge):
 		for row in reader:
 			data_doge_raw.append (row)
 
+	print (">>> rows all:", len(data_doge_raw))
+
 	data_high_doge = get_column(data_doge_raw, 2)
 	data_low_doge = get_column(data_doge_raw, 3)
 	data_close_doge = get_column(data_doge_raw, 4)
@@ -92,6 +94,7 @@ def last_data_load (max_doge):
 	X = np.reshape(X, (1, 2, INPUT_LEN))
 	print("X", X)
 	print("X.shape", X.shape)
+	# exit("END")
 	return X, data_real
 
 def get_column(matrix, i):
